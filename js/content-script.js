@@ -1,0 +1,1 @@
+console.log("Video Category", window.ytInitialPlayerResponse.microformat.playerMicroformatRenderer.category);
