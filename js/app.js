@@ -154,6 +154,7 @@
   }
 
   // Thank you https://stackoverflow.com/questions/24297929/javascript-to-listen-for-url-changes-in-youtube-html5-player for investigating YT events
+  // This won't fire in embedded videos, which is probably best
   window.addEventListener('yt-page-data-updated', checkVidCat);
   async function checkVidCat() {
     // API key borrowed from https://crxcavator.io/source/jedeklblgiihonnldgldeagmbkhlblek/1.0.0?file=content.js&platform=Chrome
@@ -177,8 +178,10 @@
       document.documentElement.appendChild(div);
 
       requestAnimationFrame(() => { requestAnimationFrame(() => {  // Call twice to ensure the div is displayed (requestAnimationFrame runs before redraw)
-        const confirmation = prompt('Video category "' + videoCat + '" is not allowed. If you wish to continue, copy the onscreen popup') || "";
-        if (confirmation.toLowerCase() !== confirmationString.toLowerCase()) {
+        const confirmation = prompt('Video category "' + videoCat + '" is not allowed. If you wish to continue, copy the onscreen popup or type "music" if this is music') || "";
+        if (confirmation.toLowerCase() === "music")
+          location.hostname = "music.youtube.com";
+        else if (confirmation.toLowerCase() !== confirmationString.toLowerCase()) {
           if (history.length > 1)
             history.back();
           else

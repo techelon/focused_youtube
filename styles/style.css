@@ -109,7 +109,6 @@ body.fy-watch-page #guide-button,
 body.fy-watch-page #guide-content,
 body.fy-watch-page #end,
 body.fy-watch-page #sub-menu,
-body.fy-watch-page #items,
 body.fy-watch-page #related,
 body.fy-watch-page #subscribe-button,
 /*body.fy-watch-page #comments,*/
@@ -153,53 +152,4 @@ ytd-live-chat-frame  /* Hide live chat and chat replay */
 /* Hides notification bell-icon from header menu */
 ytd-notification-topbar-button-renderer.notification-button-style-type-default {
   display: none !important;
-}
-
-.video-stream, .html5-main-video {
-    /* TODO: use Google API to selectively apply to non-educational videos
-       Fist make a request to https://developers.google.com/youtube/v3/docs/videos/list body: {part: "snippet", id: "<video_id>"}
-       Then, pass response.categoryId to https://developers.google.com/youtube/v3/docs/videoCategories/list body: {part: "snippet" id: response.id} 
-       Also see https://crxcavator.io/source/jedeklblgiihonnldgldeagmbkhlblek/1.0.0?file=content.js&platform=Chrome for examples
-       Example:
-       { "snippet": {
-        "title": "Education",
-        "assignable": true,
-        "channelId": "UCBR8-60-B28hp2BmDPdntcQ"
-       }}*/
-    /*
-    {
-        31: "Anime/Animation",
-        40: "Sci-Fi/Fantasy",
-        22: "People & Blogs",
-        2: "Autos & Vehicles",
-        30: "Movies",
-        1: "Film & Animation",
-        21: "Videoblogging",
-        27: "Education",
-        10: "Music",
-        19: "Travel & Events",
-        15: "Pets & Animals",
-        39: "Horror",
-        36: "Drama",
-        32: "Action/Adventure",
-        43: "Shows",
-        17: "Sports",
-        37: "Family",
-        35: "Documentary",
-        42: "Shorts",
-        26: "Howto & Style",
-        18: "Short Movies",
-        24: "Entertainment",
-        28: "Science & Technology",
-        20: "Gaming",
-        38: "Foreign",
-        25: "News & Politics",
-        23: "Comedy",
-        29: "Nonprofits & Activism",
-        41: "Thriller",
-        44: "Trailers",
-        34: "Comedy",
-        33: "Classics"
-      }
-    display: none !important;*/
 }
