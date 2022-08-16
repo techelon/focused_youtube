@@ -99,29 +99,15 @@
   });
 
   // Thank you https://stackoverflow.com/questions/24297929/javascript-to-listen-for-url-changes-in-youtube-html5-player for investigating YT events
-  window.addEventListener("popstate", () => console.log("popstate"));
-  window.addEventListener('load', function () {
-    console.log('load');
-  });
-  document.addEventListener('spfdone', function() {
-    console.log("spfdone");
-  });
-  window.addEventListener('yt-page-data-updated', () => {
-    console.log("page data updated");
-    checkVidCat();
-  });
-  document.addEventListener('transitionend', function(e) {
-    if (e.target.id === 'progress')
-        console.log("transitionend");
-  });
-  //checkVidCat();
+  window.addEventListener('yt-page-data-updated', checkVidCat);
   function checkVidCat() {
-    console.log("ETHAN says: Script injected!")
-    const s = document.createElement('script');
-    s.src = chrome.runtime.getURL('js/content-script.js');
-    (document.head||document.documentElement).appendChild(s);
-    // s.onload = function() {
-    //   s.remove();
-    // };
+    console.log("FOCUS says: Script injected!");
+    const frame = document.createElement("iframe");
+    frame.src = "https://www.youtube.com/watch?v=jJw7kYHp-yc"
+    document.body.appendChild(frame)
+    frame.onload = () => {
+      console.log(frame.contentWindow.ytInitialPlayerResponse?.microformat?.playerMicroformatRenderer?.category);
+      frame.remove();
+    }
   }
 })();
