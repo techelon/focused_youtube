@@ -98,16 +98,96 @@
     }
   });
 
+  // https://gist.github.com/dgp/1b24bf2961521bd75d6c
+  const catIds = {
+      31: "Anime/Animation",
+      40: "Sci-Fi/Fantasy",
+      22: "People & Blogs",
+      2: "Autos & Vehicles",
+      30: "Movies",
+      1: "Film & Animation",
+      21: "Videoblogging",
+      27: "Education",
+      10: "Music",
+      19: "Travel & Events",
+      15: "Pets & Animals",
+      39: "Horror",
+      36: "Drama",
+      32: "Action/Adventure",
+      43: "Shows",
+      17: "Sports",
+      37: "Family",
+      35: "Documentary",
+      42: "Shorts",
+      26: "Howto & Style",
+      18: "Short Movies",
+      24: "Entertainment",
+      28: "Science & Technology",
+      20: "Gaming",
+      38: "Foreign",
+      25: "News & Politics",
+      23: "Comedy",
+      29: "Nonprofits & Activism",
+      41: "Thriller",
+      44: "Trailers",
+      34: "Comedy",
+      33: "Classics"
+    };
+
+  function getQueryVariable(variable) {
+    const query = window.location.search.substring(1);
+    const vars = query.split('&');
+    for (let i = 0; i < vars.length; i++) {
+      const pair = vars[i].split('=');
+      if (decodeURIComponent(pair[0]) === variable) {
+        return decodeURIComponent(pair[1]);
+      }
+    }
+    return undefined;
+  }
+
+  function randomNumbers(count) {
+    let a = "";
+    for (let i=0; i<count; i++)
+      a += Math.floor(Math.random() * 10);
+    return a;
+  }
+
   // Thank you https://stackoverflow.com/questions/24297929/javascript-to-listen-for-url-changes-in-youtube-html5-player for investigating YT events
   window.addEventListener('yt-page-data-updated', checkVidCat);
-  function checkVidCat() {
-    console.log("FOCUS says: Script injected!");
-    const frame = document.createElement("iframe");
-    frame.src = "https://www.youtube.com/watch?v=jJw7kYHp-yc"
-    document.body.appendChild(frame)
-    frame.onload = () => {
-      console.log(frame.contentWindow.ytInitialPlayerResponse?.microformat?.playerMicroformatRenderer?.category);
-      frame.remove();
-    }
+  async function checkVidCat() {
+    // API key borrowed from https://crxcavator.io/source/jedeklblgiihonnldgldeagmbkhlblek/1.0.0?file=content.js&platform=Chrome
+    const videoId = getQueryVariable("v");
+    if (!videoId) return;
+    const videoMetadata = await (await fetch(`https://youtube.googleapis.com/youtube/v3/videos?id=${videoId}&part=snippet&key=AIzaSyCLtPIDnh66lUXv440RfC09ztaQekc2KxA`)).json();
+    const videoCatId = Number.parseInt(videoMetadata.items[0].snippet.categoryId);
+    const videoCat = catIds[videoCatId];
+    // TODO: should I allow "science & tech"?
+    if (!([35, 27, 25, 10, 29, undefined]).includes(videoCatId)) {
+      // TODO: if I want to make it extra secure, I can shuffle the word order!
+      // The random numbers are to prevent copy/paste
+      const confirmationString = "I am sure I want to watch this video " + randomNumbers(6);
+      document.querySelector(".ytp-play-button").click();
+      const playerElem = document.querySelector("ytd-player");
+      playerElem.style.display = "none";
+
+      const div = document.createElement("div");
+      div.classList.add("focusyt-perfectCenter");
+      div.innerText = confirmationString;
+      document.documentElement.appendChild(div);
+
+      requestAnimationFrame(() => { requestAnimationFrame(() => {  // Call twice to ensure the div is displayed (requestAnimationFrame runs before redraw)
+        const confirmation = prompt('Video category "' + videoCat + '" is not allowed. If you wish to continue, copy the onscreen popup') || "";
+        if (confirmation.toLowerCase() !== confirmationString.toLowerCase()) {
+          if (history.length > 1)
+            history.back();
+          else
+            window.close();
+        }
+        div.remove();
+        playerElem.style.display = "";
+      })});
+    } else
+      console.log(videoCat, "is allowed");
   }
 })();
