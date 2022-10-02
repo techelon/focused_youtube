@@ -4,6 +4,8 @@
 
 :heart: FY **does not track any user data**. It's a simple Vanilla JS application made with only one purpose – to help you avoid Youtube's rabbit hole.
 
+:sparkles: **Changes from upstream:** Disallow watching videos from hard-coded categories. To override, the user must type, "I am sure I want to watch this video" followed by 6 randomly generated numberes.
+
 ## Screenshots
 
 ### 🏠 Distraction-free Youtube homepage.
