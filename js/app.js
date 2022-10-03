@@ -160,6 +160,7 @@
     // API key borrowed from https://crxcavator.io/source/jedeklblgiihonnldgldeagmbkhlblek/1.0.0?file=content.js&platform=Chrome
     const videoId = getQueryVariable("v");
     if (!videoId) return;
+    // Contained within ytd-player, but there's only 1 video element & specifying causes video to be shown briefly so it's omitted
     const playerElem = document.querySelector("video");
     playerElem.style.visibility = "hidden";
     const videoMetadata = await (await fetch(`https://youtube.googleapis.com/youtube/v3/videos?id=${videoId}&part=snippet&key=AIzaSyCLtPIDnh66lUXv440RfC09ztaQekc2KxA`)).json();

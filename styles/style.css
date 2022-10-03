@@ -153,8 +153,3 @@ ytd-live-chat-frame  /* Hide live chat and chat replay */
 ytd-notification-topbar-button-renderer.notification-button-style-type-default {
   display: none !important;
 }
-
-/* Hides video by default. Contained within ytd-player, but there's only 1 video element & specifying causes video to be shown briefly so it's omitted */
-video {
-    visibility: hidden;
-}
