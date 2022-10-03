@@ -14,7 +14,7 @@
   const initFY = () => {
     cleanUpFYClasses();
 
-    if(window.location.pathname === "/" || window.location.pathname === "/feed/subscriptions") {
+    if(window.location.pathname === "/" || window.location.pathname === "/feed/subscriptions" || location.pathname.indexOf("/shorts/") == 0) {
       initHomePage();
     } else if(window.location.pathname === "/results") {
       initResultsPage();
@@ -160,37 +160,34 @@
     // API key borrowed from https://crxcavator.io/source/jedeklblgiihonnldgldeagmbkhlblek/1.0.0?file=content.js&platform=Chrome
     const videoId = getQueryVariable("v");
     if (!videoId) return;
+    const playerElem = document.querySelector("video");
+    playerElem.style.visibility = "hidden";
     const videoMetadata = await (await fetch(`https://youtube.googleapis.com/youtube/v3/videos?id=${videoId}&part=snippet&key=AIzaSyCLtPIDnh66lUXv440RfC09ztaQekc2KxA`)).json();
     const videoCatId = Number.parseInt(videoMetadata.items[0].snippet.categoryId);
     const videoCat = catIds[videoCatId];
     // TODO: should I allow "science & tech"?
-    if (!([35, 27, 25, 10, 29, undefined]).includes(videoCatId)) {
+    if (!([35, 27, 25, 10, 28, 29, undefined]).includes(videoCatId)) {
       // TODO: if I want to make it extra secure, I can shuffle the word order!
       // The random numbers are to prevent copy/paste
       const confirmationString = "I am sure I want to watch this video " + randomNumbers(6);
-      document.querySelector(".ytp-play-button").click();
-      const playerElem = document.querySelector("ytd-player");
-      playerElem.style.display = "none";
+      document.querySelector(".ytp-play-button").click();  // Pause video
 
       const div = document.createElement("div");
       div.classList.add("focusyt-perfectCenter");
       div.innerText = confirmationString;
-      document.documentElement.appendChild(div);
+      document.body.appendChild(div);
 
       requestAnimationFrame(() => { requestAnimationFrame(() => {  // Call twice to ensure the div is displayed (requestAnimationFrame runs before redraw)
-        const confirmation = prompt('Video category "' + videoCat + '" is not allowed. If you wish to continue, copy the onscreen popup or type "music" if this is music') || "";
-        if (confirmation.toLowerCase() === "music")
-          location.hostname = "music.youtube.com";
-        else if (confirmation.toLowerCase() !== confirmationString.toLowerCase()) {
-          if (history.length > 1)
-            history.back();
-          else
-            window.close();
+        const confirmation = prompt('Video category "' + videoCat + '" is not allowed. If you wish to continue, copy the onscreen popup') || "";
+        if (confirmation.toLowerCase() === confirmationString.toLowerCase()) {
+          playerElem.style.visibility = "visible";
         }
         div.remove();
-        playerElem.style.display = "";
+        document.querySelector(".ytp-play-button").click();  // Play video. My attempt to abstract this failed
       })});
-    } else
+    } else {
       console.log(videoCat, "is allowed");
+      playerElem.style.visibility = "visible";
+    }
   }
 })();
