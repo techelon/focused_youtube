@@ -111,8 +111,8 @@ body.fy-watch-page #end,
 body.fy-watch-page #sub-menu,
 body.fy-watch-page #related,
 body.fy-watch-page #subscribe-button,
-/*body.fy-watch-page #comments,*/
-body.fy-watch-page ytd-button-renderer,
+/*body.fy-watch-page #comments,* /
+body.fy-watch-page ytd-button-renderer, /* This is causing issues with showing the add to playlist button */
 body.fy-watch-page yt-icon-button.dropdown-trigger:first-of-type,
 body.fy-watch-page ytd-sentiment-bar-renderer,
 .ytd-browse .app-header {
@@ -131,7 +131,7 @@ ytd-browse[page-subtype='channels'] .app-header {
 /* Styles specific to /watch */
 .html5-endscreen,  /* Remove suggested video endscreen */
 .ytp-ce-element,  /* Remove end-video subscribe and author reccomendations */
-.ytd-popup-container,  /* Remove YT premium/TV nudges */
+/*.ytd-popup-container,  /* Remove YT premium/TV nudges */
 .ytp-pause-overlay,  /* hide suggest video popup when embedded videos paused */
 .ytp-next-button,  /* Remove play next button */
 ytd-live-chat-frame  /* Hide live chat and chat replay */
