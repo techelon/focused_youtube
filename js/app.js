@@ -167,6 +167,7 @@
     const videoCat = catIds[videoCatId];
     // TODO: should I allow "science & tech"?
     if (!([35, 27, 25, 10, 28, 29, undefined]).includes(videoCatId)) {
+      if (document.visibilityState === "hidden") return;
       // TODO: if I want to make it extra secure, I can shuffle the word order!
       // The random numbers are to prevent copy/paste
       const confirmationString = "I am sure I want to watch this video " + randomNumbers(6);
