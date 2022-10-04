@@ -20,6 +20,12 @@
       ],
       "run_at": "document_end",
       "all_frames": true
+    },
+    {
+      "matches": [
+        "https://music.youtube.com/*"
+      ],
+      "css": [ "styles/music.css" ]
     }
   ],
   "host_permissions": [
