@@ -167,7 +167,9 @@
     const videoCatId = Number.parseInt(videoMetadata.items[0].snippet.categoryId);
     const videoCat = catIds[videoCatId];
     // TODO: should I allow "science & tech"?
-    if (!([35, 27, 25, 10, 28, 29, undefined]).includes(videoCatId)) {
+    if (videoCatId === 10) {
+        // Do nothing b/c music videos are distracting, I'll never want to enable them, and the categorization is fairly accurate
+    } else if (!([35, 27, 25, 28, 29, undefined]).includes(videoCatId)) {
       if (document.visibilityState === "hidden") return;
       // TODO: if I want to make it extra secure, I can shuffle the word order!
       // The random numbers are to prevent copy/paste
