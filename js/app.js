@@ -162,7 +162,7 @@
     if (!videoId) return;
     // Contained within ytd-player, but there's only 1 video element & specifying causes video to be shown briefly so it's omitted
     const playerElem = document.querySelector("video");
-    playerElem.style.visibility = "hidden";
+    playerElem.style.opacity = "0";
     const videoMetadata = await (await fetch(`https://youtube.googleapis.com/youtube/v3/videos?id=${videoId}&part=snippet&key=AIzaSyCLtPIDnh66lUXv440RfC09ztaQekc2KxA`)).json();
     const videoCatId = Number.parseInt(videoMetadata.items[0].snippet.categoryId);
     const videoCat = catIds[videoCatId];
@@ -184,14 +184,14 @@
       requestAnimationFrame(() => { requestAnimationFrame(() => {  // Call twice to ensure the div is displayed (requestAnimationFrame runs before redraw)
         const confirmation = prompt('Video category "' + videoCat + '" is not allowed. If you wish to continue, copy the onscreen popup') || "";
         if (confirmation.toLowerCase() === confirmationString.toLowerCase()) {
-          playerElem.style.visibility = "visible";
+          playerElem.style.visibility = "100%";
         }
         div.remove();
         document.querySelector(".ytp-play-button").click();  // Play video. My attempt to abstract this failed
       })});
     } else {
       console.log(videoCat, "is allowed");
-      playerElem.style.visibility = "visible";
+      playerElem.style.opacity = "100%";
     }
   }
 })();

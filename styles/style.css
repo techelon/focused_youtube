@@ -112,7 +112,7 @@ body.fy-watch-page #sub-menu,
 body.fy-watch-page #related,
 body.fy-watch-page #subscribe-button,
 /*body.fy-watch-page #comments,* /
-body.fy-watch-page ytd-button-renderer, /* This is causing issues with showing the add to playlist button */
+body.fy-watch-page ytd-button-renderer, /* This is causing issues with showing the add to playlist button. A side effect is that it brings back the side buttons (see rule for tp-yt-app-drawer) */
 body.fy-watch-page yt-icon-button.dropdown-trigger:first-of-type,
 body.fy-watch-page ytd-sentiment-bar-renderer,
 .ytd-browse .app-header {
@@ -152,4 +152,18 @@ ytd-live-chat-frame  /* Hide live chat and chat replay */
 /* Hides notification bell-icon from header menu */
 ytd-notification-topbar-button-renderer.notification-button-style-type-default {
   display: none !important;
+}
+
+/* Hide thumbnails on search page */
+ytd-video-renderer, ytd-radio-renderer, ytd-grid-video-renderer {
+    filter: saturate(0%) blur(25px);
+    transition: opacity 200ms, filter 300ms;
+}
+ytd-video-renderer:hover, ytd-radio-renderer:hover, ytd-grid-video-renderer:hover {
+    filter: saturate(100%) blur(0);
+}
+
+/* Hides sidebar buttons */
+tp-yt-app-drawer, ytd-mini-guide-renderer {
+    display: none !important;
 }
