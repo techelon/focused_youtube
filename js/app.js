@@ -167,9 +167,7 @@
     const videoCatId = Number.parseInt(videoMetadata.items[0].snippet.categoryId);
     const videoCat = catIds[videoCatId];
     // TODO: should I allow "science & tech"?
-    if (videoCatId === 10) {
-        // Do nothing b/c music videos are distracting, I'll never want to enable them, and the categorization is fairly accurate
-    } else if (!([35, 27, 25, 28, 29, undefined]).includes(videoCatId)) {
+    if (!([35, 27, 25, 28, 29, undefined]).includes(videoCatId)) {
       if (document.visibilityState === "hidden") return;
       // TODO: if I want to make it extra secure, I can shuffle the word order!
       // The random numbers are to prevent copy/paste
@@ -184,8 +182,9 @@
       requestAnimationFrame(() => { requestAnimationFrame(() => {  // Call twice to ensure the div is displayed (requestAnimationFrame runs before redraw)
         const confirmation = prompt('Video category "' + videoCat + '" is not allowed. If you wish to continue, copy the onscreen popup') || "";
         if (confirmation.toLowerCase() === confirmationString.toLowerCase()) {
-          playerElem.style.visibility = "100%";
-        }
+          playerElem.style.opacity = "100%";
+        } else if (confirmation.length > 0)
+            alert("Confirmation failed :(");
         div.remove();
         document.querySelector(".ytp-play-button").click();  // Play video. My attempt to abstract this failed
       })});
