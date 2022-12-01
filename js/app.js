@@ -133,6 +133,7 @@
       34: "Comedy",
       33: "Classics"
     };
+    const allowedOverrides = new Set(["school", "education", "tutorial", "news"]);
 
   function getQueryVariable(variable) {
     const query = window.location.search.substring(1);
@@ -181,7 +182,7 @@
 
       requestAnimationFrame(() => { requestAnimationFrame(() => {  // Call twice to ensure the div is displayed (requestAnimationFrame runs before redraw)
         const confirmation = prompt('Video category "' + videoCat + '" is not allowed. If you wish to continue, copy the onscreen popup') || "";
-        if (confirmation.toLowerCase() === confirmationString.toLowerCase()) {
+        if (confirmation.toLowerCase() === confirmationString.toLowerCase() || allowedOverrides.has(confirmation.toLowerCase())) {
           playerElem.style.opacity = "100%";
         } else if (confirmation.length > 0)
             alert("Confirmation failed :(");

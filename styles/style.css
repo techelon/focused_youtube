@@ -156,11 +156,7 @@ ytd-notification-topbar-button-renderer.notification-button-style-type-default {
 
 /* Hide thumbnails on search page */
 ytd-video-renderer, ytd-radio-renderer, ytd-grid-video-renderer {
-    filter: saturate(0%) blur(25px);
-    transition: opacity 200ms, filter 1s;
-}
-ytd-video-renderer:hover, ytd-radio-renderer:hover, ytd-grid-video-renderer:hover {
-    filter: saturate(100%) blur(0);
+    filter: saturate(0%);
 }
 
 /* Hides sidebar buttons */
