@@ -7,6 +7,12 @@
   "icons": {
     "128": "extension_icon.png"
   },
+  "permissions": [
+    "management"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
   "content_scripts": [
     {
       "matches": [
