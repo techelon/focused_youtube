@@ -14,12 +14,16 @@
   const initFY = () => {
     cleanUpFYClasses();
 
-    if(window.location.pathname === "/" || window.location.pathname === "/feed/subscriptions" || location.pathname.indexOf("/shorts/") == 0) {
-      initHomePage();
-    } else if(window.location.pathname === "/results") {
-      initResultsPage();
-    } else if(window.location.pathname === "/watch") {
-      initWatchPage();
+    if(window.location.pathname.indexOf("/feed") !== 0 && window.location.pathname !== "/playlist" && window.location.pathname.indexOf("/embed") !== 0) {
+      if(window.location.pathname === "/results") {
+        initResultsPage();
+      } else if(window.location.pathname === "/watch") {
+        initWatchPage();
+      } else {
+        initHomePage();
+      }
+    } else if (window.location.pathname === "/feed/subscriptions") {
+      setTimeout(initSubscriptions, 2000);
     }
   }
 
@@ -29,6 +33,65 @@
 
   const initResultsPage = () => {
     document.body.classList.add("fy-results-page");
+  }
+  
+  function initSubscriptions() {
+    const removeCDATA = str => str.replace("<![CDATA[", "").replace("]]>", "");
+    
+    const now = new Date().getTime();
+    const container = document.createElement("div");
+    container.classList.add("playlist-container");
+    document.querySelector("ytd-shelf-renderer").prepend(container);
+    // Add new playlists via https://rss.app/myfeeds
+    const playlists = [
+      "https://rss.app/feeds/DXpVlNGj24oVDJpI.xml",  // Helluva boss
+      "https://rss.app/feeds/21VqgNY914Hp9WlW.xml",  // What's new in Chrome
+      "https://rss.app/feeds/5bQ5ko4dHEz593BA.xml",  // What's new in DevTools
+      "https://rss.app/feeds/gSJDjeF3ZWzcz9gM.xml",  // Sebastian Lague Coding Adventures
+    ];
+    for (const playlist of playlists) {
+      fetch(playlist)
+        .then(response => response.text())
+        .then(str => new window.DOMParser().parseFromString(str, "text/xml"))
+        .then(rss => {
+          const items = rss.getElementsByTagName("item");
+          for (const item of items) {
+            //const item = items[i];
+            const data = {
+              thumbnail: item.querySelector('[medium=image]').getAttribute("url"),
+              publish: new Date(item.querySelector('pubDate').innerHTML).getTime(),
+              link: item.querySelector('link').innerHTML,
+              title: removeCDATA(item.querySelector('title').innerHTML),
+              // Unused properties
+              description: removeCDATA(item.querySelector('description').innerHTML),
+              views: Number.parseInt(item.querySelector('[views]').getAttribute("views")),
+            };
+            if (data.publish < now - 6.048e+8) break;  // Stop adding if older than a week
+            console.log(item, data);
+            container.appendChild(createVideoRenderer(data));
+          }
+        });
+    }
+  }
+  
+  function createVideoRenderer({thumbnail, link, title}) {
+    const container = document.createElement("div");
+    container.classList.add("video-renderer");
+    
+    const img = document.createElement("img");
+    img.src = thumbnail;
+    img.classList.add("thumbnail");
+    container.appendChild(img);
+    
+    const titleDiv = document.createElement("div");
+    titleDiv.innerText = title;
+    titleDiv.classList.add("title-div");
+    container.appendChild(titleDiv);
+    
+    const a = document.createElement("a");
+    a.href = link;
+    a.appendChild(container);
+    return a;
   }
 
   const initHomePage = () => {

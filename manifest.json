@@ -32,6 +32,12 @@
         "https://music.youtube.com/*"
       ],
       "css": [ "styles/music.css" ]
+    },
+    {
+      "matches": [
+        "https://www.youtube.com/feed/subscriptions"
+      ],
+      "css": [ "styles/subscriptions.css" ]
     }
   ],
   "host_permissions": [
