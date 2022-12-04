@@ -25,6 +25,11 @@
     } else if (window.location.pathname === "/feed/subscriptions") {
       setTimeout(initSubscriptions, 2000);
     }
+    
+    chrome.storage.local.get("unblock").then(({unblock}) => {
+      if (unblock > new Date().getTime())
+        initLockoutPage(unblock);
+    });
   }
 
   const initWatchPage = () => {
@@ -126,6 +131,14 @@
     `;
 
     anchor.querySelector(".search-form").onsubmit = search;
+  }
+  
+  const initLockoutPage = unlockAt => {
+    initHomePage();
+    document.querySelector(".focused-youtube__body").innerHTML = "Will unblock at " + new Date(unlockAt).toLocaleTimeString();
+    setTimeout(() => {
+      document.onvisibilitychange = location.reload.bind(location);
+    }, unlockAt - new Date().getTime());
   }
 
   const observeDOM = (function() {
@@ -260,4 +273,9 @@
       playerElem.style.opacity = "100%";
     }
   }
+  
+  chrome.storage.onChanged.addListener((changes, namespace) => {
+    if (changes.unblock.newValue > new Date().getTime())
+      initLockoutPage(changes.unblock.newValue);
+  });
 })();
