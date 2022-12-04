@@ -158,6 +158,9 @@
       currentUrl = window.location.href;
 
       initFY();
+    } else if (window.location.pathname === "/results") {  // Disallow ctrl-clicking on results page
+      for (const anchor of document.getElementsByTagName("a"))
+        anchor.onclick = ev => ev.preventDefault();
     }
   });
 
