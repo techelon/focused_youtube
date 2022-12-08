@@ -2,6 +2,9 @@
   document.body.style.display = "block";
 
   let currentUrl = window.location.href;
+  
+  // API key borrowed from https://crxcavator.io/source/jedeklblgiihonnldgldeagmbkhlblek/1.0.0?file=content.js&platform=Chrome
+  const apiKey = "AIzaSyCLtPIDnh66lUXv440RfC09ztaQekc2KxA";
 
   let cleanUpFYClasses = () => {
     document.body.classList.forEach(className => {
@@ -48,28 +51,30 @@
     container.classList.add("playlist-container");
     document.querySelector("ytd-shelf-renderer").prepend(container);
     // Add new playlists via https://rss.app/myfeeds
+    // TODO: query YT itself b/c my rss.app trial expires. I could simply `fetch` the playlist url, but that only has relative dates, which would require writing a parser (albeit rather simple)
+    // Or, make API requests. YT stores its key in `ytcfg.get("WEB_PLAYER_CONTEXT_CONFIGS")["WEB_PLAYER_CONTEXT_CONFIG_ID_KEVLAR_WATCH"]["innertubeApiKey"]`
     const playlists = [
-      "https://rss.app/feeds/DXpVlNGj24oVDJpI.xml",  // Helluva boss
-      "https://rss.app/feeds/21VqgNY914Hp9WlW.xml",  // What's new in Chrome
-      "https://rss.app/feeds/5bQ5ko4dHEz593BA.xml",  // What's new in DevTools
-      "https://rss.app/feeds/gSJDjeF3ZWzcz9gM.xml",  // Sebastian Lague Coding Adventures
+      "PL-uopgYBi65HwiiDR9Y23lomAkGr9mm-S",  // Helluva boss
+      "PLNYkxOF6rcIDfz8XEA3loxY32tYh7CI3m",  // What's new in Chrome
+      "PLNYkxOF6rcIBDSojZWBv4QJNoT4GNYzQD",  // What's new in DevTools
+      "PLFt_AvWsXl0ehjAfLFsp1PGaatzAwo0uK",  // Sebastian Lague Coding Adventures
+      "PLFt_AvWsXl0dPhqVsKt1Ni_46ARyiCGSq",  // Sebastian Lague how computers work
+      "PLliBvQE3gg9f4Fsp_Ys0wTEEAszzqW6HP",  // Persona 5
     ];
     for (const playlist of playlists) {
-      fetch(playlist)
-        .then(response => response.text())
-        .then(str => new window.DOMParser().parseFromString(str, "text/xml"))
-        .then(rss => {
-          const items = rss.getElementsByTagName("item");
-          for (const item of items) {
-            //const item = items[i];
+      fetch(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${playlist}&key=${apiKey}`)
+        .then(response => response.json())
+        .then(({items}) => {
+          for (const {snippet} of items) {
             const data = {
-              thumbnail: item.querySelector('[medium=image]').getAttribute("url"),
-              publish: new Date(item.querySelector('pubDate').innerHTML).getTime(),
-              link: item.querySelector('link').innerHTML,
-              title: removeCDATA(item.querySelector('title').innerHTML),
+              thumbnail: snippet.thumbnails.high.url,
+              publish: new Date(publishedAt).getTime(),
+              link: "https://www.youtube.com/watch?v=" + snippet.resourceId.videoId,
+              title: snippet.title,
               // Unused properties
-              description: removeCDATA(item.querySelector('description').innerHTML),
-              views: Number.parseInt(item.querySelector('[views]').getAttribute("views")),
+              description: snippet.description,
+              channel: snippet.channelTitle,
+              //TODO: view count
             };
             if (data.publish < now - 6.048e+8) break;  // Stop adding if older than a week
             console.log(item, data);
@@ -237,13 +242,12 @@
   // This won't fire in embedded videos, which is probably best
   window.addEventListener('yt-page-data-updated', checkVidCat);
   async function checkVidCat() {
-    // API key borrowed from https://crxcavator.io/source/jedeklblgiihonnldgldeagmbkhlblek/1.0.0?file=content.js&platform=Chrome
     const videoId = getQueryVariable("v");
     if (!videoId) return;
     // Contained within ytd-player, but there's only 1 video element & specifying causes video to be shown briefly so it's omitted
     const playerElem = document.querySelector("video");
     playerElem.style.opacity = "0";
-    const videoMetadata = await (await fetch(`https://youtube.googleapis.com/youtube/v3/videos?id=${videoId}&part=snippet&key=AIzaSyCLtPIDnh66lUXv440RfC09ztaQekc2KxA`)).json();
+    const videoMetadata = await (await fetch(`https://youtube.googleapis.com/youtube/v3/videos?id=${videoId}&part=snippet&key=${apiKey}`)).json();
     const videoCatId = Number.parseInt(videoMetadata.items[0].snippet.categoryId);
     const videoCat = catIds[videoCatId];
     // TODO: should I allow "science & tech"?
