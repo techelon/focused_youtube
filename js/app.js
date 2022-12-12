@@ -50,9 +50,7 @@
     const container = document.createElement("div");
     container.classList.add("playlist-container");
     document.querySelector("ytd-shelf-renderer").prepend(container);
-    // Add new playlists via https://rss.app/myfeeds
-    // TODO: query YT itself b/c my rss.app trial expires. I could simply `fetch` the playlist url, but that only has relative dates, which would require writing a parser (albeit rather simple)
-    // Or, make API requests. YT stores its key in `ytcfg.get("WEB_PLAYER_CONTEXT_CONFIGS")["WEB_PLAYER_CONTEXT_CONFIG_ID_KEVLAR_WATCH"]["innertubeApiKey"]`
+    // YT stores its key in `ytcfg.get("WEB_PLAYER_CONTEXT_CONFIGS")["WEB_PLAYER_CONTEXT_CONFIG_ID_KEVLAR_WATCH"]["innertubeApiKey"]`
     const playlists = [
       "PL-uopgYBi65HwiiDR9Y23lomAkGr9mm-S",  // Helluva boss
       "PLNYkxOF6rcIDfz8XEA3loxY32tYh7CI3m",  // What's new in Chrome
@@ -60,6 +58,7 @@
       "PLFt_AvWsXl0ehjAfLFsp1PGaatzAwo0uK",  // Sebastian Lague Coding Adventures
       "PLFt_AvWsXl0dPhqVsKt1Ni_46ARyiCGSq",  // Sebastian Lague how computers work
       "PLliBvQE3gg9f4Fsp_Ys0wTEEAszzqW6HP",  // Persona 5
+      "PLnKtcw5mIGUTCUGoIUhN28LdPxT879z8E",  // Pixel updates
     ];
     for (const playlist of playlists) {
       fetch(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${playlist}&key=${apiKey}`)
@@ -68,7 +67,7 @@
           for (const {snippet} of items) {
             const data = {
               thumbnail: snippet.thumbnails.high.url,
-              publish: new Date(publishedAt).getTime(),
+              publish: new Date(snippet.publishedAt).getTime(),
               link: "https://www.youtube.com/watch?v=" + snippet.resourceId.videoId,
               title: snippet.title,
               // Unused properties
@@ -76,8 +75,7 @@
               channel: snippet.channelTitle,
               //TODO: view count
             };
-            if (data.publish < now - 6.048e+8) break;  // Stop adding if older than a week
-            console.log(item, data);
+            if (data.publish < now - 6.048e+8) continue;  // Stop adding if older than a week. Use `continue` instead of `break` b/c if len(playlists) < 5, it seems videos are arranged chronologically ascending instead of descending, so knowing that the first video is too old will provide no useful information about the 2nd
             container.appendChild(createVideoRenderer(data));
           }
         });
