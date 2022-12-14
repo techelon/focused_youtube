@@ -8,14 +8,10 @@
     "128": "extension_icon.png"
   },
   "permissions": [
-    "management",
-    "storage"
+    "management"
   ],
   "background": {
     "service_worker": "js/background.js"
-  },
-  "action": {
-    "default_popup": "popup.html"
   },
   "content_scripts": [
     {
