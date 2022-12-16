@@ -18,9 +18,7 @@
     cleanUpFYClasses();
 
     if(window.location.pathname.indexOf("/feed") !== 0 && window.location.pathname !== "/playlist" && window.location.pathname.indexOf("/embed") !== 0) {
-      if(window.location.pathname === "/results") {
-        initResultsPage();
-      } else if(window.location.pathname === "/watch") {
+      if(window.location.pathname === "/watch") {
         initWatchPage();
       } else {
         initHomePage();
