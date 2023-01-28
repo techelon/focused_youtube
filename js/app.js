@@ -17,10 +17,12 @@
   const initFY = () => {
     cleanUpFYClasses();
 
-    if(window.location.pathname.indexOf("/feed") !== 0 && window.location.pathname !== "/playlist" && window.location.pathname.indexOf("/embed") !== 0) {
+    if(!window.location.pathname.startsWith("/feed") && window.location.pathname !== "/playlist" && !window.location.pathname.startsWith("/embed")) {
       if(window.location.pathname === "/watch") {
         initWatchPage();
-      } else {
+      } else if (location.pathname.startsWith("/shorts"))
+        location.href = location.href.replace("shorts/", "watch?v=");
+      else {
         initHomePage();
       }
     } else if (window.location.pathname === "/feed/subscriptions") {
