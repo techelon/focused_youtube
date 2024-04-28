@@ -17,15 +17,15 @@
   const initFY = () => {
     cleanUpFYClasses();
 
-    if(!window.location.pathname.startsWith("/feed") && window.location.pathname !== "/playlist" && !window.location.pathname.startsWith("/embed")) {
-      if(window.location.pathname === "/watch") {
+    if(!location.pathname.startsWith("/feed") && location.pathname !== "/playlist" && !location.pathname.startsWith("/embed")) {
+      if(location.pathname === "/watch" || location.pathname.startsWith("/live")) {
         initWatchPage();
       } else if (location.pathname.startsWith("/shorts"))
         location.href = location.href.replace("shorts/", "watch?v=");
       else {
         initHomePage();
       }
-    } else if (window.location.pathname === "/feed/subscriptions") {
+    } else if (location.pathname === "/feed/subscriptions") {
       setTimeout(initSubscriptions, 2000);
     }
   }
@@ -52,8 +52,8 @@
       "PLNYkxOF6rcIBDSojZWBv4QJNoT4GNYzQD",  // What's new in DevTools
       "PLFt_AvWsXl0ehjAfLFsp1PGaatzAwo0uK",  // Sebastian Lague Coding Adventures
       "PLFt_AvWsXl0dPhqVsKt1Ni_46ARyiCGSq",  // Sebastian Lague how computers work
-      "PLliBvQE3gg9f4Fsp_Ys0wTEEAszzqW6HP",  // Persona 5
       "PLnKtcw5mIGUTCUGoIUhN28LdPxT879z8E",  // Pixel updates
+      "PLtY71Sv1CZtCu1bT5nkU2laNl5USA-y0i",  // My school spirit
     ];
     for (const playlist of playlists) {
       fetch(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${playlist}&key=${apiKey}`)
