@@ -111,6 +111,7 @@ body.fy-watch-page #end,
 body.fy-watch-page #sub-menu,
 body.fy-watch-page #related,
 body.fy-watch-page #subscribe-button,
+ytd-comments #contents ytd-comment-thread-renderer:nth-child(n + 3),  /* Only show first two comments */
 /*body.fy-watch-page #comments,* /
 body.fy-watch-page ytd-button-renderer, /* This is causing issues with showing the add to playlist button. A side effect is that it brings back the side buttons (see rule for tp-yt-app-drawer) */
 body.fy-watch-page yt-icon-button.dropdown-trigger:first-of-type,
