@@ -223,6 +223,16 @@
     return a;
   }
 
+  async function getVideoElem() {
+    const maxRetry = 8;  // 4 seconds
+    for (let retry = 0; retry < maxRetry; retry++) {
+      const playerElem = document.querySelector("video");
+      if (playerElem) return playerElem;
+      await new Promise(res => window.setTimeout(res, 500));
+    }
+    document.documentElement.innerHTML = "Failed to block video after 4 seconds, reload the page";
+  }
+
   // Thank you https://stackoverflow.com/questions/24297929/javascript-to-listen-for-url-changes-in-youtube-html5-player for investigating YT events
   // This won't fire in embedded videos, which is probably best
   window.addEventListener('yt-page-data-updated', checkVidCat);
@@ -230,7 +240,7 @@
     const videoId = getQueryVariable("v");
     if (!videoId) return;
     // Contained within ytd-player, but there's only 1 video element & specifying causes video to be shown briefly so it's omitted
-    const playerElem = document.querySelector("video");
+    const playerElem = await getVideoElem();
     playerElem.style.opacity = "0";
     const videoMetadata = await (await fetch(`https://youtube.googleapis.com/youtube/v3/videos?id=${videoId}&part=snippet&key=${apiKey}`)).json();
     const videoCatId = Number.parseInt(videoMetadata.items[0].snippet.categoryId);
