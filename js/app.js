@@ -238,25 +238,18 @@
     // TODO: should I allow "science & tech"?
     if (!([35, 27, 25, 28, 29, undefined]).includes(videoCatId)) {
       if (document.visibilityState === "hidden") return;
-      // TODO: if I want to make it extra secure, I can shuffle the word order!
-      // The random numbers are to prevent copy/paste
-      const confirmationString = "I am sure I want to watch this video " + randomNumbers(6);
+      // Not in allowed category, ask for manual confirmation
       document.querySelector(".ytp-play-button").click();  // Pause video
+      catCorrect = prompt('Video category "' + videoCat + '" is not allowed. Is this video one of the following: ' + Array.from(allowedOverrides).join(", "));
 
-      const div = document.createElement("div");
-      div.classList.add("focusyt-perfectCenter");
-      div.innerText = confirmationString;
-      document.body.appendChild(div);
+      if (catCorrect[0] === 'y'
+      || (catCorrect[0] === 'n'
+      && !confirm("Are you trying to procrastinate? Is there something else you should be doing right now?")
+      )) {
+        playerElem.style.opacity = "100%";
+      }
 
-      requestAnimationFrame(() => { requestAnimationFrame(() => {  // Call twice to ensure the div is displayed (requestAnimationFrame runs before redraw)
-        const confirmation = prompt('Video category "' + videoCat + '" is not allowed. If you wish to continue, copy the onscreen popup') || "";
-        if (confirmation.toLowerCase() === confirmationString.toLowerCase() || allowedOverrides.has(confirmation.toLowerCase())) {
-          playerElem.style.opacity = "100%";
-        } else if (confirmation.length > 0)
-            alert("Confirmation failed :(");
-        div.remove();
-        document.querySelector(".ytp-play-button").click();  // Play video. My attempt to abstract this failed
-      })});
+      document.querySelector(".ytp-play-button").click();  // Play video. My attempt to abstract this failed
     } else {
       console.log(videoCat, "is allowed");
       playerElem.style.opacity = "100%";
