@@ -17,11 +17,11 @@
   const initFY = () => {
     cleanUpFYClasses();
 
-    if(!location.pathname.startsWith("/feed") && location.pathname !== "/playlist" && !location.pathname.startsWith("/embed")) {
+    if(!location.pathname.startsWith("/feed") && location.pathname !== "/playlist" && !location.pathname.startsWith("/embed") && !location.pathname.startsWith("/howyoutubeworks") && !location.pathname.startsWith("/copyright_complaint_form") && !location.pathname.startsWith("/@")) {
       if(location.pathname === "/watch" || location.pathname.startsWith("/live")) {
         initWatchPage();
       } else if (location.pathname.startsWith("/shorts"))
-        location.href = location.href.replace("shorts/", "watch?v=");
+        location.replace(location.href.replace("shorts/", "watch?v="));
       else {
         initHomePage();
       }
@@ -54,6 +54,9 @@
       "PLFt_AvWsXl0dPhqVsKt1Ni_46ARyiCGSq",  // Sebastian Lague how computers work
       "PLnKtcw5mIGUTCUGoIUhN28LdPxT879z8E",  // Pixel updates
       "PLtY71Sv1CZtCu1bT5nkU2laNl5USA-y0i",  // My school spirit
+      "PL0vfts4VzfNjnYhJMfTulea5McZbQLM7G",  // The code report
+      "PL0vfts4VzfNiI1BsIK5u7LpPaIDKMJIDN",  // Fireship 100 seconds
+      "PLHovnlOusNLgvAbnxluXCVB3KLj8e4QB-",  // Digital Circus
     ];
     for (const playlist of playlists) {
       fetch(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${playlist}&key=${apiKey}`)
@@ -169,6 +172,7 @@
 
   // https://gist.github.com/dgp/1b24bf2961521bd75d6c
   const catIds = {
+      "-1": "Unknown",
       31: "Anime/Animation",
       40: "Sci-Fi/Fantasy",
       22: "People & Blogs",
@@ -243,10 +247,10 @@
     const playerElem = await getVideoElem();
     playerElem.style.opacity = "0";
     const videoMetadata = await (await fetch(`https://youtube.googleapis.com/youtube/v3/videos?id=${videoId}&part=snippet&key=${apiKey}`)).json();
-    const videoCatId = Number.parseInt(videoMetadata.items[0].snippet.categoryId);
+    // Optional chaining in case rate limit exceeded
+    const videoCatId = Number.parseInt(videoMetadata.items?.[0]?.snippet?.categoryId ?? "-1");
     const videoCat = catIds[videoCatId];
-    // TODO: should I allow "science & tech"?
-    if (!([35, 27, 25, 28, 29, undefined]).includes(videoCatId)) {
+    if (!([35, 27, 25, 28, 29]).includes(videoCatId)) {
       if (document.visibilityState === "hidden") return;
       // Not in allowed category, ask for manual confirmation
       document.querySelector(".ytp-play-button").click();  // Pause video
