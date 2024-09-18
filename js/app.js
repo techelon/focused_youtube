@@ -17,7 +17,9 @@
   const initFY = () => {
     cleanUpFYClasses();
 
-    if(!location.pathname.startsWith("/feed") && location.pathname !== "/playlist" && !location.pathname.startsWith("/embed") && !location.pathname.startsWith("/howyoutubeworks") && !location.pathname.startsWith("/copyright_complaint_form") && !location.pathname.startsWith("/@")) {
+    if(!location.pathname.startsWith("/feed") && location.pathname !== "/playlist" && !location.pathname.startsWith("/embed")
+        && !location.pathname.startsWith("/howyoutubeworks") && !location.pathname.startsWith("/copyright_complaint_form")
+        && !location.pathname.startsWith("/@")) {
       if(location.pathname === "/watch" || location.pathname.startsWith("/live")) {
         initWatchPage();
       } else if (location.pathname.startsWith("/shorts"))
@@ -206,7 +208,7 @@
       34: "Comedy",
       33: "Classics"
     };
-    const allowedOverrides = new Set(["school", "education", "tutorial", "news"]);
+    const allowedOverrides = new Set(["school", "education", "tutorial", "news", "short"]);
 
   function getQueryVariable(variable) {
     const query = window.location.search.substring(1);
@@ -254,13 +256,19 @@
       if (document.visibilityState === "hidden") return;
       // Not in allowed category, ask for manual confirmation
       document.querySelector(".ytp-play-button").click();  // Pause video
-      catCorrect = prompt('Video category "' + videoCat + '" is not allowed. Is this video one of the following: ' + Array.from(allowedOverrides).join(", "));
+      const categoryOrActivity = prompt('Video category "' + videoCat + '" is not allowed. If wrong, enter the correct allowed category ('
+                                        + Array.from(allowedOverrides).join(", ") + "). Otherwise, type something else you could be doing now.");
 
-      if (catCorrect[0] === 'y'
-      || (catCorrect[0] === 'n'
-      && !confirm("Are you trying to procrastinate? Is there something else you should be doing right now?")
-      )) {
-        playerElem.style.opacity = "100%";
+      if (categoryOrActivity) {
+        if (allowedOverrides.has(categoryOrActivity)) {
+          playerElem.style.opacity = "100%";
+        } else {
+          const reason = prompt(`Why should you be allowed to watch this instead of doing ${categoryOrActivity}?`);
+
+          if (reason) {
+            playerElem.style.opacity = "100%";
+          }
+        }
       }
 
       document.querySelector(".ytp-play-button").click();  // Play video. My attempt to abstract this failed
