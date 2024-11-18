@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Watchdog",
   "description": "Watch other extension and make sure they remain enabled",
-  "version": "1.0",
+  "version": "1.1",
   "author": "Ethan Dawes",
   "icons": {
     "128": "watchdog.png"
