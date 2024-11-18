@@ -2,7 +2,7 @@
   document.body.style.display = "block";
 
   let currentUrl = window.location.href;
-  
+
   // API key borrowed from https://crxcavator.io/source/jedeklblgiihonnldgldeagmbkhlblek/1.0.0?file=content.js&platform=Chrome
   const apiKey = "AIzaSyCLtPIDnh66lUXv440RfC09ztaQekc2KxA";
 
@@ -17,18 +17,42 @@
   const initFY = () => {
     cleanUpFYClasses();
 
-    if(!location.pathname.startsWith("/feed") && location.pathname !== "/playlist" && !location.pathname.startsWith("/embed")
-        && !location.pathname.startsWith("/howyoutubeworks") && !location.pathname.startsWith("/copyright_complaint_form")
-        && !location.pathname.startsWith("/@")) {
-      if(location.pathname === "/watch" || location.pathname.startsWith("/live")) {
-        initWatchPage();
-      } else if (location.pathname.startsWith("/shorts"))
-        location.replace(location.href.replace("shorts/", "watch?v="));
-      else {
+    if (location.pathname === "/feed/subscriptions") {
+      setTimeout(initSubscriptions, 2000);
+    }
+    else if (location.pathname.startsWith("/feed") || location.pathname === "/playlist" || location.pathname.startsWith("/embed")
+        || location.pathname.startsWith("/howyoutubeworks") || location.pathname.startsWith("/copyright_complaint_form")) {
+      // do nothing, exempt
+    }
+    else if (location.pathname === "/watch" || location.pathname.startsWith("/live")) {
+      initWatchPage();
+    }
+    else if (location.pathname.startsWith("/shorts")) {
+      location.replace(location.href.replace("shorts/", "watch?v="));
+    }
+    else if (location.pathname.startsWith("/@")) {  // is channel
+        const problematicChannels = new Set(["fern-tv", "VinceVintage", "MentourPilot", "GreenDotAviation", "LegalEagle", "thechadx2", "kurtisconner", "drewisgooden", "Danny-Gonzalez", "hoogyoutube", "fish_381"]);
+
+        /*
+        problem: channel URLs prefixed with /@ and /channel have different identifiers. Solutions:
+        1. new URL(ytInitialData.metadata.channelMetadataRenderer.vanityChannelUrl).pathname.substring(2);
+           always gets human-readable name but requires workaround (https://stackoverflow.com/a/9636008) b/c content scripts run in their own context. Use `externalId` to prevent false negative if name change?
+        2. document.querySelector("yt-content-metadata-view-model").innerText; channelName.substring(1, channelName.indexOf('\n'));
+           Undefined until fully loaded, could cause flickering from resultant delay
+        3. forbid /channel and use URL pathname (easiest)
+        */
+        let channelName = location.pathname.split('/')[1].substring(1);
+        console.log("Channel:", channelName);
+        if (problematicChannels.has(channelName))
+          initHomePage();
+
+      // disallow viewing channels from google
+      if (!document.referrer || new URL(document.referrer).hostname !== "www.youtube.com") {
         initHomePage();
       }
-    } else if (location.pathname === "/feed/subscriptions") {
-      setTimeout(initSubscriptions, 2000);
+    }
+    else {
+      initHomePage();
     }
   }
 
@@ -39,10 +63,10 @@
   const initResultsPage = () => {
     document.body.classList.add("fy-results-page");
   }
-  
+
   function initSubscriptions() {
     const removeCDATA = str => str.replace("<![CDATA[", "").replace("]]>", "");
-    
+
     const now = new Date().getTime();
     const container = document.createElement("div");
     container.classList.add("playlist-container");
@@ -81,21 +105,21 @@
         });
     }
   }
-  
+
   function createVideoRenderer({thumbnail, link, title}) {
     const container = document.createElement("div");
     container.classList.add("video-renderer");
-    
+
     const img = document.createElement("img");
     img.src = thumbnail;
     img.classList.add("thumbnail");
     container.appendChild(img);
-    
+
     const titleDiv = document.createElement("div");
     titleDiv.innerText = title;
     titleDiv.classList.add("title-div");
     container.appendChild(titleDiv);
-    
+
     const a = document.createElement("a");
     a.href = link;
     a.appendChild(container);
