@@ -11,6 +11,7 @@
     "management"
   ],
   "background": {
+    "scripts": ["js/background.js"],
     "service_worker": "js/background.js"
   },
   "content_scripts": [
@@ -55,5 +56,10 @@
       "matches": [ "https://www.youtube.com/*" ]
     }
   ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "strict-focused-yt@ethandawes.dev"
+    }
+  },
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA4eMad0E5CQKRzdv9RoqHpPi8lyn5klpLJWJzUA3bnltGMHbcEGBM9Kj5mTQjKuQsvIvp42R1/7rWOk2UI5l7WkbArtVT18puwJeDEVr+YnlXxEO/g39DrlCOENJOjUDFOt6/TTie35u5vVouJme3c3VTaC0vIVJpmdNhyAR3NKtliVGC0OmlM5ncxJYGaZpLihvhlKC8paGG8dsvMMLSKXFQZuzLn2tufJQgF5JqQ3AzIO9F0zwFe2tS1b54SFBUxIU1H/yYix7BY+O9Fy64fSn+n+9CVk2wDqdWhy9WVkWWFNbQGkKoRYxi+2pyigxvjwHpbfj5Hz7Qq9N8QoiCHQIDAQAB"
 }
