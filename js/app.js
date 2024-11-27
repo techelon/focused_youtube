@@ -25,29 +25,20 @@
       // do nothing, exempt
     }
     else if (location.pathname === "/watch" || location.pathname.startsWith("/live")) {
-      initWatchPage();
+      if (isBannedChannel())
+        initHomePage();
+      else
+        initWatchPage();
     }
     else if (location.pathname.startsWith("/shorts")) {
       location.replace(location.href.replace("shorts/", "watch?v="));
     }
-    else if (location.pathname.startsWith("/@")) {  // is channel
-        const problematicChannels = new Set(["fern-tv", "VinceVintage", "MentourPilot", "GreenDotAviation", "LegalEagle", "thechadx2", "kurtisconner", "drewisgooden", "Danny-Gonzalez", "hoogyoutube", "fish_381"]);
-
-        /*
-        problem: channel URLs prefixed with /@ and /channel have different identifiers. Solutions:
-        1. new URL(ytInitialData.metadata.channelMetadataRenderer.vanityChannelUrl).pathname.substring(2);
-           always gets human-readable name but requires workaround (https://stackoverflow.com/a/9636008) b/c content scripts run in their own context. Use `externalId` to prevent false negative if name change?
-        2. document.querySelector("yt-content-metadata-view-model").innerText; channelName.substring(1, channelName.indexOf('\n'));
-           Undefined until fully loaded, could cause flickering from resultant delay
-        3. forbid /channel and use URL pathname (easiest)
-        */
-        let channelName = location.pathname.split('/')[1].substring(1);
-        console.log("Channel:", channelName);
-        if (problematicChannels.has(channelName))
-          initHomePage();
-
-      // disallow viewing channels from google
-      if (!document.referrer || new URL(document.referrer).hostname !== "www.youtube.com") {
+    else if (location.pathname.startsWith("/@") || location.pathname.startsWith("/channel/") || location.pathname.startsWith("/c/")) {  // is channel
+      if (isBannedChannel()) {
+        initHomePage();
+      }
+      // disallow viewing channels from google or with no browser history (common workaround using ctrl click)
+      else if (new URL(document.referrer).hostname === "www.google.com" || history.length === 1) {
         initHomePage();
       }
     }
@@ -242,6 +233,22 @@
       }
     }
     return undefined;
+  }
+  
+  function isBannedChannel() {
+    const problematicChannels = new Set(["fern-tv", "VinceVintage", "MentourPilot", "GreenDotAviation", "LegalEagle", "thechadx2", "kurtisconner", "drewisgooden", "Danny-Gonzalez", "hoogyoutube", "fish_381", "BrandonRogers"]);
+
+    /*
+    problem: channel URLs prefixed with /@ and /channel have different identifiers. Solutions:
+    1. new URL(ytInitialData.metadata.channelMetadataRenderer.vanityChannelUrl).pathname.substring(2);
+       always gets human-readable name but requires workaround (https://stackoverflow.com/a/9636008) b/c content scripts run in their own context. Use `externalId` to prevent false negative if name change?
+    2. document.querySelector("yt-content-metadata-view-model").innerText; channelName.substring(1, channelName.indexOf('\n'));
+       Undefined until fully loaded, could cause flickering from resultant delay
+    3. forbid /channel and use URL pathname (prior implementation)
+    4. Regex search all the script tags (current implementation)
+    */
+    const re = /"canonicalBaseUrl":"\/\@([^"]+)"/;
+    return Array.from(document.getElementsByTagName("script")).some(elem => problematicChannels.has(re.exec(elem?.innerText)?.[1]));
   }
 
   function randomNumbers(count) {
