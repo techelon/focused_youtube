@@ -80,9 +80,7 @@
       "PLFt_AvWsXl0dPhqVsKt1Ni_46ARyiCGSq",  // Sebastian Lague how computers work
       "PLnKtcw5mIGUTCUGoIUhN28LdPxT879z8E",  // Pixel updates
       "PLtY71Sv1CZtCu1bT5nkU2laNl5USA-y0i",  // My school spirit
-      "PL0vfts4VzfNjnYhJMfTulea5McZbQLM7G",  // The code report
       "PL0vfts4VzfNiI1BsIK5u7LpPaIDKMJIDN",  // Fireship 100 seconds
-      "PLHovnlOusNLgvAbnxluXCVB3KLj8e4QB-",  // Digital Circus
     ];
     for (const playlist of playlists) {
       fetch(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${playlist}&key=${apiKey}`)
