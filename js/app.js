@@ -69,9 +69,10 @@
       "PLNYkxOF6rcIBDSojZWBv4QJNoT4GNYzQD",  // What's new in DevTools
       "PLFt_AvWsXl0ehjAfLFsp1PGaatzAwo0uK",  // Sebastian Lague Coding Adventures
       "PLFt_AvWsXl0dPhqVsKt1Ni_46ARyiCGSq",  // Sebastian Lague how computers work
-      "PLnKtcw5mIGUTCUGoIUhN28LdPxT879z8E",  // Pixel updates
+      "PLnKtcw5mIGURKWPPnJP-wIBD_kdH74EIO",  // Pixel updates
       "PLtY71Sv1CZtCu1bT5nkU2laNl5USA-y0i",  // My school spirit
       "PL0vfts4VzfNiI1BsIK5u7LpPaIDKMJIDN",  // Fireship 100 seconds
+      "PLxyDPFsnfrbl1sCoZrgD_-7OQYA9h9o9h",  // Lackadaisy
     ];
     for (const playlist of playlists) {
       fetch(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${playlist}&key=${apiKey}`)
@@ -236,7 +237,7 @@
   }
   
   function isBannedChannel() {
-    const problematicChannels = new Set(["fern-tv", "VinceVintage", "MentourPilot", "GreenDotAviation", "LegalEagle", "thechadx2", "kurtisconner", "drewisgooden", "Danny-Gonzalez", "hoogyoutube", "fish_381", "BrandonRogers"]);
+    const problematicChannels = new Set(["fern-tv", "VinceVintage", "MentourPilot", "GreenDotAviation", "LegalEagle", "thechadx2", "kurtisconner", "drewisgooden", "Danny-Gonzalez", "hoogyoutube", "fish_381", "BrandonRogers", "mkbhd", "Mrwhosetheboss"]);
 
     /*
     problem: channel URLs prefixed with /@ and /channel have different identifiers. Solutions:
