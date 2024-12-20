@@ -25,6 +25,7 @@
       "css": [
         "styles/style.css"
       ],
+      "world": "MAIN",
       "run_at": "document_end",
       "all_frames": true
     },

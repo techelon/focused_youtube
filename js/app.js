@@ -241,12 +241,11 @@
 
     /*
     problem: channel URLs prefixed with /@ and /channel have different identifiers. Solutions:
-    1. new URL(ytInitialData.metadata.channelMetadataRenderer.vanityChannelUrl).pathname.substring(2);
-       always gets human-readable name but requires workaround (https://stackoverflow.com/a/9636008) b/c content scripts run in their own context. Use `externalId` to prevent false negative if name change?
+    1. Accessing fields on ytInitialData. Changed since last checked, cannot count on being consistent. (requires "world": "MAIN" in manifest)
     2. document.querySelector("yt-content-metadata-view-model").innerText; channelName.substring(1, channelName.indexOf('\n'));
        Undefined until fully loaded, could cause flickering from resultant delay
     3. forbid /channel and use URL pathname (prior implementation)
-    4. Regex search all the script tags (current implementation)
+    4. Regex search all the script tags. Can sometimes false-positive if forbidden channel appears in recommendations (current implementation)
     */
     const re = /"canonicalBaseUrl":"\/\@([^"]+)"/;
     return Array.from(document.getElementsByTagName("script")).some(elem => problematicChannels.has(re.exec(elem?.innerText)?.[1]));
