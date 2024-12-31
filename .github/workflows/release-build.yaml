@@ -43,7 +43,7 @@ jobs:
 
     - name: Zip main directory
       run: |
-        cd main && zip -r ../main.zip .
+        cd main && zip -r ../extension.zip .
 
     - name: Create release
       if: env.new_version == 'true'
