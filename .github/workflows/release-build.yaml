@@ -17,13 +17,13 @@ jobs:
       id: get_version
       run: |
         current_version=$(jq -r '.version' main/manifest.json)
-        echo "current_version=$current_version" >> $GITHUB_ENV
+        echo "current_version=v$current_version" >> $GITHUB_ENV
 
     - name: Get latest release version
       id: get_latest_release
       run: |
         latest_version=$(curl -s https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r '.tag_name' || echo "0.0.0")
-        echo "latest_version=v$latest_version" >> $GITHUB_ENV
+        echo "latest_version=$latest_version" >> $GITHUB_ENV
 
     - name: Compare versions
       id: compare_versions
