@@ -21,8 +21,10 @@ jobs:
       run: |
         zip -r extension.zip main
 
-    - name: Upload artifact
-      uses: actions/upload-artifact@v3
+    - name: Upload to release assets
+      uses: actions/upload-release-asset@v1
       with:
-        name: main-build
-        path: extension.zip
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: main.zip
+        asset_name: main.zip
+        asset_content_type: application/zip
