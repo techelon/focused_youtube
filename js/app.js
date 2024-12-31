@@ -5,6 +5,7 @@
 
   // API key borrowed from https://crxcavator.io/source/jedeklblgiihonnldgldeagmbkhlblek/1.0.0?file=content.js&platform=Chrome
   const apiKey = "AIzaSyCLtPIDnh66lUXv440RfC09ztaQekc2KxA";
+  // now that I know how to exec js in main ctx, looked into using native api requests, but google uses wierd token (https://gist.github.com/eyecatchup/2d700122e24154fdc985b7071ec7764a) might just be easier to continue. Plus, searching all global vars yielded nothing
 
   let cleanUpFYClasses = () => {
     document.body.classList.forEach(className => {
@@ -222,7 +223,15 @@
       34: "Comedy",
       33: "Classics"
     };
-    const allowedOverrides = new Set(["school", "education", "tutorial", "news", "short"]);
+    const allowedOverrides = new Set(["school", "stem", "tutorial", "news"]);
+    const disallowedReasons = {
+        gay: "go to the lgbtq center you queer!",
+        furry: "have you practiced drawing today? òwó",
+        depression: "go talk to people!",
+        "brain off": "give a fish a hug and talk it out! 🦈",
+        bored: "exercise!",
+        sleepy: "take a nap!",
+    };
 
   function getQueryVariable(variable) {
     const query = window.location.search.substring(1);
@@ -285,17 +294,29 @@
       if (document.visibilityState === "hidden") return;
       // Not in allowed category, ask for manual confirmation
       document.querySelector(".ytp-play-button").click();  // Pause video
-      const categoryOrActivity = prompt('Video category "' + videoCat + '" is not allowed. If wrong, enter the correct allowed category ('
-                                        + Array.from(allowedOverrides).join(", ") + "). Otherwise, type something else you could be doing now.");
+      const categoryOrActivity = prompt('Video category "' + videoCat + '" is not allowed. Override? (reasons include reward, quality content, '
+                                        + Array.from(allowedOverrides).join(", ") + ", " + Object.keys(disallowedReasons).join(", ") + ")");
 
       if (categoryOrActivity) {
+        const disallowedReason = disallowedReasons[categoryOrActivity];
         if (allowedOverrides.has(categoryOrActivity)) {
           playerElem.style.opacity = "100%";
-        } else {
-          const reason = prompt(`Why should you be allowed to watch this instead of doing ${categoryOrActivity}?`);
-
-          if (reason) {
-            playerElem.style.opacity = "100%";
+        } else if (disallowedReason) {
+          alert(disallowedReason);
+        } else if (new Date().getDay() === 5) {
+          alert("non-essential yt is disallowed on Fridays");
+        } else if (categoryOrActivity === "reward") {
+          const now = new Date().getTime();
+          const lastReward = localStorage.lastReward;
+          const diff = now - lastReward;
+          const hour = 36e5;
+          if (diff < hour) {
+            if (prompt("what have you done to deserve this reward?")) {
+              localStorage.lastReward = now;
+              playerElem.style.opacity = "100%";
+            }
+          } else {
+            alert("you've already used your reward within the past hour");
           }
         }
       }
