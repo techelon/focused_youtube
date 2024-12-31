@@ -24,7 +24,7 @@
         || location.pathname.startsWith("/howyoutubeworks") || location.pathname.startsWith("/copyright_complaint_form")) {
       // do nothing, exempt
     }
-    else if (location.pathname === "/watch" || location.pathname.startsWith("/live")) {
+    else if (location.pathname === "/watch" || location.pathname.startsWith("/live") || location.pathname.startsWith("/clip")) {
       if (isBannedChannel())
         initHomePage();
       else
