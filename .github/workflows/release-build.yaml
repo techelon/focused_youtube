@@ -1,0 +1,28 @@
+name: Build and Upload Artifact
+
+on:
+  release:
+    types:
+      - published
+
+jobs:
+  prepare-and-upload:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Remove "key" from manifest.json
+      run: |
+        jq 'del(.key)' main/manifest.json > main/manifest.tmp && mv main/manifest.tmp main/manifest.json
+
+    - name: Zip main directory
+      run: |
+        zip -r extension.zip main
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: main-build
+        path: extension.zip
