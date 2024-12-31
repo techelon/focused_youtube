@@ -23,7 +23,7 @@ jobs:
       id: get_latest_release
       run: |
         latest_version=$(curl -s https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r '.tag_name' || echo "0.0.0")
-        echo "latest_version=$latest_version" >> $GITHUB_ENV
+        echo "latest_version=v$latest_version" >> $GITHUB_ENV
 
     - name: Compare versions
       id: compare_versions
