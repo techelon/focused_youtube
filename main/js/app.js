@@ -227,7 +227,7 @@
     const disallowedReasons = {
         gay: "go to the lgbtq center you queer!",
         furry: "have you practiced drawing today? òwó",
-        depression: "go talk to people!",
+        sad: "go talk to people!",
         "brain off": "give a fish a hug and talk it out! 🦈",
         bored: "exercise!",
         sleepy: "take a nap!",
