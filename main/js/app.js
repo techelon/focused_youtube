@@ -35,11 +35,17 @@
       location.replace(location.href.replace("shorts/", "watch?v="));
     }
     else if (location.pathname.startsWith("/@") || location.pathname.startsWith("/channel/") || location.pathname.startsWith("/c/")) {  // is channel
+      const splitPathname = location.pathname.split('/');
+      if (!['videos', 'playlists'].includes(splitPathname.at(-1))) {
+        splitPathname[location.pathname[1] === '@' ? 2 : 3] = 'videos';
+        location.replace(splitPathname.join('/'));
+      }
+
       if (isBannedChannel()) {
         initHomePage();
       }
       // disallow viewing channels from google or with no browser history (common workaround using ctrl click)
-      else if (new URL(document.referrer).hostname === "www.google.com" || history.length === 1) {
+      else if ((document.referrer && new URL(document.referrer).hostname === "www.google.com") || history.length === 1) {
         initHomePage();
       }
     }
