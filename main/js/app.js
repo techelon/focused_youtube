@@ -313,10 +313,10 @@
           alert("non-essential yt is disallowed on Fridays");
         } else if (categoryOrActivity === "reward") {
           const now = new Date().getTime();
-          const lastReward = localStorage.lastReward;
+          const lastReward = localStorage.lastReward ?? 0;
           const diff = now - lastReward;
           const hour = 36e5;
-          if (diff < hour) {
+          if (diff > hour) {
             if (prompt("what have you done to deserve this reward?")) {
               localStorage.lastReward = now;
               playerElem.style.opacity = "100%";
