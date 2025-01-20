@@ -124,37 +124,9 @@
   }
 
   const initHomePage = () => {
-    const search = (event) => {
-      event.preventDefault();
-
-      const query = anchor.querySelector(".search-form__text-input").value;
-      window.location.href = "https://www.youtube.com/results?search_query=" + encodeURIComponent(query);
-    }
-
-    document.body.classList.add("fy-home-page");
-
-    const body = document.querySelector("body");
-    const anchor = document.createElement("div");
-    anchor.id = "mega-app";
-
-    body.innerHTML = "";
-    document.body.appendChild(anchor);
-
-    anchor.innerHTML = `
-      <div class="focused-youtube">
-        <div class="focused-youtube__logo">
-        </div>
-
-        <div class="focused-youtube__body">
-          <form class="focused-youtube__form search-form" action="#">
-            <input class="search-form__text-input" type="text" placeholder="Search" />
-            <button class="search-form__submit"></button>
-          </form>
-        </div>
-      </div>
-    `;
-
-    anchor.querySelector(".search-form").onsubmit = search;
+    document.body.replaceChildren();  // Using innerHTML violates CSP
+    requestAnimationFrame(() => alert("Page is disallowed"));  // Wait to prevent freezing with content on screen
+    history.back();
   }
 
   const observeDOM = (function() {
@@ -229,7 +201,7 @@
       34: "Comedy",
       33: "Classics"
     };
-    const allowedOverrides = new Set(["school", "stem", "tutorial", "news"]);
+    const allowedOverrides = new Set(["school", "stem", "tutorial", "news", "friend"]);
     const disallowedReasons = {
         gay: "go to the lgbtq center you queer!",
         furry: "have you practiced drawing today? òwó",
@@ -309,8 +281,6 @@
           playerElem.style.opacity = "100%";
         } else if (disallowedReason) {
           alert(disallowedReason);
-        } else if (new Date().getDay() === 5) {
-          alert("non-essential yt is disallowed on Fridays");
         } else if (categoryOrActivity === "reward") {
           const now = new Date().getTime();
           const lastReward = localStorage.lastReward ?? 0;
