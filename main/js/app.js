@@ -22,7 +22,8 @@
       setTimeout(initSubscriptions, 2000);
     }
     else if (location.pathname.startsWith("/feed") || location.pathname === "/playlist" || location.pathname.startsWith("/embed")
-        || location.pathname.startsWith("/howyoutubeworks") || location.pathname.startsWith("/copyright_complaint_form")) {
+        || location.pathname.startsWith("/howyoutubeworks") || location.pathname.startsWith("/copyright_complaint_form")
+        || location.pathname.startsWith("/account")) {
       // do nothing, exempt
     }
     else if (location.pathname === "/watch" || location.pathname.startsWith("/live") || location.pathname.startsWith("/clip")) {
