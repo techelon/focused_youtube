@@ -1,3 +1,13 @@
 video {
     visibility: hidden;
 }
+
+@media (prefers-color-scheme: light) {
+    html {
+        filter: invert(1);
+    }
+
+    img {
+        filter: invert(1);
+    }
+}
