@@ -4,6 +4,7 @@
   let currentUrl = window.location.href;
 
   // API key borrowed from https://crxcavator.io/source/jedeklblgiihonnldgldeagmbkhlblek/1.0.0?file=content.js&platform=Chrome
+  // YT stores its key in `ytcfg.get("WEB_PLAYER_CONTEXT_CONFIGS")["WEB_PLAYER_CONTEXT_CONFIG_ID_KEVLAR_WATCH"]["innertubeApiKey"]`. However, it doesn't have the correct permissions
   const apiKey = "AIzaSyCLtPIDnh66lUXv440RfC09ztaQekc2KxA";
   // now that I know how to exec js in main ctx, looked into using native api requests, but google uses wierd token (https://gist.github.com/eyecatchup/2d700122e24154fdc985b7071ec7764a) might just be easier to continue. Plus, searching all global vars yielded nothing
 
@@ -23,7 +24,7 @@
     }
     else if (location.pathname.startsWith("/feed") || location.pathname === "/playlist" || location.pathname.startsWith("/embed")
         || location.pathname.startsWith("/howyoutubeworks") || location.pathname.startsWith("/copyright_complaint_form")
-        || location.pathname.startsWith("/account")) {
+        || location.pathname.startsWith("/account") || location.pathname.startsWith("/email_unsubscribe")) {
       // do nothing, exempt
     }
     else if (location.pathname === "/watch" || location.pathname.startsWith("/live") || location.pathname.startsWith("/clip")) {
@@ -37,7 +38,7 @@
     }
     else if (location.pathname.startsWith("/@") || location.pathname.startsWith("/channel/") || location.pathname.startsWith("/c/")) {  // is channel
       const splitPathname = location.pathname.split('/');
-      if (!['videos', 'playlists'].includes(splitPathname.at(-1))) {
+      if (!['videos', 'playlists', 'releases'].includes(splitPathname.at(-1))) {
         splitPathname[location.pathname[1] === '@' ? 2 : 3] = 'videos';
         location.replace(splitPathname.join('/'));
       }
@@ -70,7 +71,6 @@
     const container = document.createElement("div");
     container.classList.add("playlist-container");
     document.querySelector("ytd-shelf-renderer").prepend(container);
-    // YT stores its key in `ytcfg.get("WEB_PLAYER_CONTEXT_CONFIGS")["WEB_PLAYER_CONTEXT_CONFIG_ID_KEVLAR_WATCH"]["innertubeApiKey"]`
     const playlists = [
       "PL-uopgYBi65HwiiDR9Y23lomAkGr9mm-S",  // Helluva boss
       "PLNYkxOF6rcIDfz8XEA3loxY32tYh7CI3m",  // What's new in Chrome
@@ -81,23 +81,26 @@
       "PLtY71Sv1CZtCu1bT5nkU2laNl5USA-y0i",  // My school spirit
       "PL0vfts4VzfNiI1BsIK5u7LpPaIDKMJIDN",  // Fireship 100 seconds
       "PLxyDPFsnfrbl1sCoZrgD_-7OQYA9h9o9h",  // Lackadaisy
+      "PLaHHpDSEtBWNcGluMk--beDjzriSsp-f7",  // Atlas and the Stars
+      // "OLAK5uy_l7V5rVd1ESx0tPtiFFkjinoX-yWZXj8KI",  // Spellcasting TODO: artist playlists. This doesn't work b/c all songs have 'added' = today and appear non-chronologically (by popularity)
     ];
     for (const playlist of playlists) {
-      fetch(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${playlist}&key=${apiKey}`)
+      fetch(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&playlistId=${playlist}&key=${apiKey}`)
         .then(response => response.json())
         .then(({items}) => {
-          for (const {snippet} of items) {
+          for (const {snippet, contentDetails} of items) {
             const data = {
               thumbnail: snippet.thumbnails.high.url,
-              publish: new Date(snippet.publishedAt).getTime(),
+              added: new Date(snippet.publishedAt).getTime(),
+              publish: new Date(contentDetails.videoPublishedAt),
               link: "https://www.youtube.com/watch?v=" + snippet.resourceId.videoId,
               title: snippet.title,
               // Unused properties
               description: snippet.description,
-              channel: snippet.channelTitle,
+              channel: snippet.videoOwnerChannelTitle, // channelTitle is the playlist owner?
               //TODO: view count
             };
-            if (data.publish < now - 6.048e+8) continue;  // Stop adding if older than a week. Use `continue` instead of `break` b/c if len(playlists) < 5, it seems videos are arranged chronologically ascending instead of descending, so knowing that the first video is too old will provide no useful information about the 2nd
+            if (data.added < now - 6.048e+8) continue;  // Skip adding if older than a week. Use `continue` instead of `break` b/c if len(playlists) < 5, it seems videos are arranged chronologically ascending instead of descending, so knowing that the first video is too old will provide no useful information about the 2nd
             container.appendChild(createVideoRenderer(data));
           }
         });
