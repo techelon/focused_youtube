@@ -228,7 +228,7 @@
   }
   
   function isBannedChannel() {
-    const problematicChannels = new Set(["fern-tv", "VinceVintage", "MentourPilot", "GreenDotAviation", "LegalEagle", "thechadx2", "kurtisconner", "drewisgooden", "Danny-Gonzalez", "hoogyoutube", "fish_381", "BrandonRogers", "mkbhd", "Mrwhosetheboss"]);
+    const problematicChannels = new Set(["fern-tv", "VinceVintage", "MentourPilot", "GreenDotAviation", "LegalEagle", "thechadx2", "kurtisconner", "drewisgooden", "Danny-Gonzalez", "hoogyoutube", "fish_381", "BrandonRogers", "mkbhd", "Mrwhosetheboss", "CGPGrey", "neoexplains", "kurzgesagt"]);
 
     /*
     problem: channel URLs prefixed with /@ and /channel have different identifiers. Solutions:
